@@ -132,10 +132,10 @@ def passB2BTest(datapath, failedCases, case, command, outputs):
 	for output in outputs :
 		removeIfExists(output)
 	try :
-		startTime = int(round(time.time() * 1000))
+		startTime = time.time()
 		commandError = subprocess.call(command, shell=True)
-		endTime = int(round(time.time() * 1000))
-		testcase.setTime(endTime-startTime)
+		endTime = time.time()
+		testcase.setTime(round(endTime-startTime, 2))
 		if commandError :
 			failedCases.append((case, ["Command failed with return code %i:\n'%s'"%(commandError,command)]))
 			testcase.appendFailure("Command failed with return code %i:\n'%s'"%(commandError,command))
