@@ -95,11 +95,16 @@ def removeIfExists(filename) :
 	try: os.remove(filename)
 	except: pass
 
+_testSuiteName = "testsuite_name"
+
+def setTestSuiteName(name) :
+	global _testSuiteName
+	_testSuiteName = name
 
 def passB2BTests(datapath, back2BackCases) :
 	failedCases = []	
 	
-	testsuite = TestSuite("testsuite_name")
+	testsuite = TestSuite(_testSuiteName)
 
 	for case, command, outputs in back2BackCases :
 		testsuite.appendTestCase(passB2BTest(datapath, failedCases, case, command, outputs))
@@ -108,7 +113,7 @@ def passB2BTests(datapath, back2BackCases) :
 	junitDoc = JUnitDocument("AllTests")
 	junitDoc.appendTestSuite(testsuite)
 
-	junitFile = open("result.xml", "w")
+	junitFile = open(_testSuiteName + "_result.xml", "w")
 	junitFile.write(junitDoc.toxml())
 	junitFile.close()
 
