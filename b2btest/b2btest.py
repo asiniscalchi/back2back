@@ -95,7 +95,7 @@ def removeIfExists(filename) :
 	try: os.remove(filename)
 	except: pass
 
-_testSuiteName = "testsuite_name"
+_testSuiteName = "(undefined)"
 
 def setTestSuiteName(name) :
 	global _testSuiteName
