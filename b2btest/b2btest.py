@@ -3,7 +3,6 @@ import subprocess
 
 from junitoutput import *
 
-
 def run(command) :
 	print '\033[32m:: ', command, '\033[0m'
 	errorCode = os.system(command)
@@ -106,7 +105,7 @@ def passB2BTests(datapath, back2BackCases) :
 		testsuite.appendTestCase(passB2BTest(datapath, failedCases, case, command, outputs))
 
 	
-	junitDoc = JUnitDocument("MyTest")
+	junitDoc = JUnitDocument("AllTests")
 	junitDoc.appendTestSuite(testsuite)
 
 	junitFile = open("result.xml", "w")
