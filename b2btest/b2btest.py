@@ -95,16 +95,10 @@ def removeIfExists(filename) :
 	try: os.remove(filename)
 	except: pass
 
-_testSuiteName = "(undefined)"
-
-def setTestSuiteName(name) :
-	global _testSuiteName
-	_testSuiteName = name
-
-def passB2BTests(datapath, back2BackCases) :
+def passB2BTests(datapath, back2BackCases, testSuiteName) :
 	failedCases = []	
 	
-	testsuite = TestSuite(_testSuiteName)
+	testsuite = TestSuite(testSuiteName)
 
 	for case, command, outputs in back2BackCases :
 		testsuite.appendTestCase(passB2BTest(datapath, failedCases, case, command, outputs))
@@ -113,7 +107,7 @@ def passB2BTests(datapath, back2BackCases) :
 	junitDoc = JUnitDocument("AllTests")
 	junitDoc.appendTestSuite(testsuite)
 
-	junitFile = open(_testSuiteName + "_result.xml", "w")
+	junitFile = open(testSuiteName + "_result.xml", "w")
 	junitFile.write(junitDoc.toxml())
 	junitFile.close()
 
@@ -133,6 +127,10 @@ def passB2BTests(datapath, back2BackCases) :
 def passB2BTest(datapath, failedCases, case, command, outputs):
 	testcase = TestCase(case)
 	phase("Test: %s Command: '%s'"%(case,command))
+
+	if isinstance(outputs, str) :
+		outputs = [ outputs ]
+
 	for output in outputs :
 		removeIfExists(output)
 	try :
@@ -202,7 +200,7 @@ due to floating point missmatches, use:
 def _caseList(cases) :
 	return "".join(["\t"+case+"\n" for case in cases])
 
-def runBack2BackProgram_returnSuccess(datapath, argv, back2BackCases, help=help) :
+def runBack2BackProgram_returnSuccess(datapath, argv, back2BackCases, testSuiteName, help=help) :
 
 	"--help" not in sys.argv or die(help, 0)
 
@@ -235,9 +233,9 @@ def runBack2BackProgram_returnSuccess(datapath, argv, back2BackCases, help=help)
 		accept(datapath, back2BackCases, architectureSpecific)
 		sys.exit()
 
-	return passB2BTests(datapath, back2BackCases)
+	return passB2BTests(datapath, back2BackCases, testSuiteName)
 
-def runBack2BackProgram(datapath, argv, back2BackCases, help=help) :
-	runBack2BackProgram_returnSuccess(datapath, argv, back2BackCases, help) or die("Tests not passed") 
+def runBack2BackProgram(datapath, argv, back2BackCases, testSuiteName="undefined", help=help) :
+	runBack2BackProgram_returnSuccess(datapath, argv, back2BackCases, testSuiteName, help) or die("Tests not passed") 
 
 ### End of generic stuff
