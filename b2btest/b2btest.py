@@ -200,7 +200,7 @@ due to floating point missmatches, use:
 def _caseList(cases) :
 	return "".join(["\t"+case+"\n" for case in cases])
 
-def runBack2BackProgram_returnSuccess(datapath, argv, back2BackCases, testSuiteName, help=help) :
+def runBack2BackProgram_returnSuccess(datapath, argv, back2BackCases, testSuiteName="undefined", help=help) :
 
 	"--help" not in sys.argv or die(help, 0)
 
