@@ -2,33 +2,22 @@ import os, sys, string, time
 import subprocess
 
 from junitoutput import *
-
-USE_ANSI_COLORS = True
-
-def add_ansi_color(string, color_code_of_line, color_code_after_line=0) :
-    if not USE_ANSI_COLORS : return string
-    return "\033[%im%s\033[%im" % (color_code_of_line, string, color_code_after_line)
-def add_red_color (string) :
-    return add_ansi_color(string, 31, 0)
-def add_green_color (string) :
-    return add_ansi_color(string, 32, 0)
-def add_brown_color (string) :
-    return add_ansi_color(string, 33, 0)
+from ansi_color import ansiColor
 
 def run(command) :
-	print add_green_color(':: %s' % command)
+	print ansiColor.add_green_color(':: %s' % command)
 	errorCode = os.system(command)
 	if errorCode :
 		print "\n\nThe following command failed:"
-		print add_red_color(command)
+		print ansiColor.add_red_color(command)
 		sys.exit()
 	return not errorCode
 
 def norun(command) :
-	print add_red_color('XX %s' % command)
+	print ansiColor.add_red_color('XX %s' % command)
 
 def phase(msg) :
-    print add_brown_color("== %s" % msg)
+    print ansiColor.add_brown_color("== %s" % msg)
 
 def die(message, errorcode=-1) :
 	print >> sys.stderr, message
@@ -124,11 +113,11 @@ def passB2BTests(datapath, back2BackCases, testSuiteName) :
 	junitFile.close()
 
 	print "Summary:"
-	print add_green_color('%i passed cases' % (len(back2BackCases)-len(failedCases)))
+	print ansiColor.add_green_color('%i passed cases' % (len(back2BackCases)-len(failedCases)))
 
 	if not failedCases : return True
 
-	print add_red_color('%i failed cases!' % len(failedCases))
+	print ansiColor.add_red_color('%i failed cases!' % len(failedCases))
 	for case, msgs in failedCases :
 		print case, ":"
 		for msg in msgs :
@@ -170,12 +159,12 @@ def passB2BTest(datapath, failedCases, case, command, outputs):
 		diffbase = diffbase + extension
 
 		if not difference:
-			print add_green_color(" Passed")
+			print ansiColor.add_green_color(" Passed")
 			removeIfExists(diffbase)
 			removeIfExists(diffbase+'.png')
 			removeIfExists(badResultName(base,extension))
 		else:
-			print add_red_color(" Failed")
+			print ansiColor.add_red_color(" Failed")
 			os.system('cp %s %s' % (output, badResultName(base,extension)) )
 			failures.append("Output '%s':\n%s"%(base, '\n'.join(['\t- %s'%item for item in difference])))
 			testcase.appendFailure("Output '%s':\n%s"%(base, '\n'.join(['\t- %s'%item for item in difference])))
@@ -218,8 +207,7 @@ def runBack2BackProgram_returnSuccess(datapath, argv, back2BackCases, testSuiteN
 
 	architectureSpecific = "--arch" in argv
 	if architectureSpecific : argv.remove("--arch")
-	global USE_ANSI_COLORS
-	USE_ANSI_COLORS = enable_colors
+	ansiColor.USE_ANSI_COLORS = enable_colors
 
 	os.access( datapath, os.X_OK ) or die(
 		"Datapath at '%s' not available. "%datapath +
