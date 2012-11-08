@@ -108,7 +108,7 @@ def passB2BTests(datapath, back2BackCases, testSuiteName) :
 	junitDoc = JUnitDocument("AllTests")
 	junitDoc.appendTestSuite(testsuite)
 
-	junitFile = open(testSuiteName + "_result.xml", "w")
+	junitFile = open(testSuiteName + "_test_detail.xml", "w")
 	junitFile.write(junitDoc.toxml())
 	junitFile.close()
 
