@@ -30,6 +30,7 @@ extensions = [
 def differences(expected, result, diffBase=None, threshold_dBs=-80 , allow_different_duration=False) :
 	import wavefile_audiolab
 	import numpy as np
+	import math
 
 	mandatory_attributes = [ 
 				'samplerate', 
@@ -125,8 +126,8 @@ def differences(expected, result, diffBase=None, threshold_dBs=-80 , allow_diffe
 			threshold_amplitude = 10**(threshold_dBs/20)
 
 			errors += [
-				"Value missmatch at channel %i, maximum difference of %f at sample %i, threshold at %f" %
-					( channel, value, sample, threshold_amplitude )
+				"Value missmatch at channel %i, maximum difference of %f (%0.3fdB) at sample %i, threshold at %f (%0.3fdB)" %
+					( channel, value, 20*math.log10(value), sample, threshold_amplitude, threshold_dBs )
 					for channel, (value, sample)
 					in enumerate(zip(maxdiff, maxdiffpos))
 					if value > threshold_amplitude
