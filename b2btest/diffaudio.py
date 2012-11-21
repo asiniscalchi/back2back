@@ -27,7 +27,7 @@ extensions = [
 	'au',
 ]
 
-def differences(expected, result, diffBase=None, threshold_dBs=-80 , allow_different_duration=False) :
+def differences(expected, result, diffBase=None, threshold_dBs=-80, allow_different_duration=False, expected_offset=0, result_offset = 0) :
 	import wavefile_audiolab
 	import numpy as np
 	import math
@@ -37,12 +37,14 @@ def differences(expected, result, diffBase=None, threshold_dBs=-80 , allow_diffe
 				'channels',
 				'frames',
 				] 
+	if expected_offset> 0 or result_offset > 0 : 
+		allow_different_duration = True
 	if allow_different_duration : 
 		mandatory_attributes.remove('frames')
 
 	errors = []
-	with wavefile_audiolab.WaveReader(expected) as expectedReader :
-		with wavefile_audiolab.WaveReader(result) as resultReader :
+	with wavefile_audiolab.WaveReader(expected, expected_offset) as expectedReader :
+		with wavefile_audiolab.WaveReader(result, result_offset) as resultReader :
 			for attribute in mandatory_attributes :
 				expectedAttribute = getattr(expectedReader, attribute)
 				resultAttribute = getattr(resultReader, attribute)

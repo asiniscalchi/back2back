@@ -81,6 +81,7 @@ class WaveReader(object) :
 				samplerate = 0,
 				channels = 0,
 				file_format = 0,
+				offset = 0,
 				) :
 		sndfile_handler = Sndfile (filename, 'r') 
 		if not sndfile_handler :
@@ -93,6 +94,9 @@ class WaveReader(object) :
 				'frames' : sndfile_handler.nframes,
 				} # TODO: metadata not implemented
 		self._readed_frames = 0
+		if offset > 0 : 
+			self.read(np.zeros((offset,self._info['channels']), np.float64))
+
 	def __enter__(self) :
 		return self
 	def __exit__(self,type,value,traceback) :
