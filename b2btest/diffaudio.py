@@ -43,8 +43,8 @@ def differences(expected, result, diffBase=None, threshold_dBs=-80, allow_differ
 		mandatory_attributes.remove('frames')
 
 	errors = []
-	with wavefile_audiolab.WaveReader(expected, expected_offset) as expectedReader :
-		with wavefile_audiolab.WaveReader(result, result_offset) as resultReader :
+	with wavefile_audiolab.WaveReader(expected, 0) as expectedReader :
+		with wavefile_audiolab.WaveReader(result, 0) as resultReader :
 			for attribute in mandatory_attributes :
 				expectedAttribute = getattr(expectedReader, attribute)
 				resultAttribute = getattr(resultReader, attribute)
@@ -83,6 +83,14 @@ def differences(expected, result, diffBase=None, threshold_dBs=-80, allow_differ
 						samplerate = expectedReader.samplerate,
 						)
 
+			
+			if expected_offset:
+				expected_buf = np.zeros((expected_offset,channels),np.float64)
+				_=expectedReader.read(expected_buf)
+			if result_offset:
+				result_buf = np.zeros((result_offset,channels),np.float64)
+				_=resultReader.read(result_buf)
+				
 			with diffWriter :
 				resultData = np.zeros((hopsize, channels), np.float64)
 				expectedData = np.zeros((hopsize, channels), np.float64)
