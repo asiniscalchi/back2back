@@ -8,6 +8,6 @@ def differences(expected, result, diffbase) :
 	are_equal = os.system("diff %s %s > %s" % (expected, result, difftxt) ) == 0
 	if are_equal: return []
 	return [
-		"The result file " + ansiColor.add_red_color("%s "%(result)) + "is different to the expected " + ansiColor.add_red_color("%s"%(expected)),
+		"The result file %s"%(result) + " is different to the expected %s"%(expected),
 		]
 
