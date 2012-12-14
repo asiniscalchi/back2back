@@ -1,5 +1,6 @@
 import os, sys, string, time
 import subprocess
+import re
 
 from junitoutput import *
 from ansi_color import ansiColor
@@ -234,6 +235,12 @@ def runBack2BackProgram_returnSuccess(datapath, argv, back2BackCases, testSuiteN
 		print "Warning: Accepting any faling case"
 		accept(datapath, back2BackCases, architectureSpecific)
 		sys.exit()
+
+	if "--runonly_re" in argv :
+		regex_pattern = argv[argv.index("--runonly_re")+1]
+		allcases = list(back2BackCases)
+		back2BackCases = [case for case in allcases if re.search(regex_pattern,case[0])]
+		
 	if "--runonly" in argv :
 		search_for = argv[argv.index("--runonly")+1:]
 		allcases = list(back2BackCases)
