@@ -236,9 +236,11 @@ def runBack2BackProgram_returnSuccess(datapath, argv, back2BackCases, testSuiteN
 		sys.exit()
 	if "--runonly" in argv :
 		search_for = argv[argv.index("--runonly")+1:]
-		back2BackCases = [case for case in back2BackCases if search_for in case]
-		
-
+		allcases = list(back2BackCases)
+		back2BackCases = []
+		for case in allcases:
+			if any( [(string in case) for string in search_for  ] ) :
+				back2BackCases.append(case)
 	return passB2BTests(datapath, back2BackCases, testSuiteName)
 
 def runBack2BackProgram(datapath, argv, back2BackCases, testSuiteName="undefined", help=help, enable_colors=True) :
