@@ -239,7 +239,8 @@ def runBack2BackProgram_returnSuccess(datapath, argv, back2BackCases, testSuiteN
 		allcases = list(back2BackCases)
 		back2BackCases = []
 		for case in allcases:
-			if any( [(string in case) for string in search_for  ] ) :
+			case_name = case[0]
+			if any([ True for string in search_for if string in case_name ]) :
 				back2BackCases.append(case)
 	return passB2BTests(datapath, back2BackCases, testSuiteName)
 
