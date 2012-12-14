@@ -234,6 +234,10 @@ def runBack2BackProgram_returnSuccess(datapath, argv, back2BackCases, testSuiteN
 		print "Warning: Accepting any faling case"
 		accept(datapath, back2BackCases, architectureSpecific)
 		sys.exit()
+	if "--runonly" in argv :
+		search_for = argv[argv.index("--runonly")+1:]
+		back2BackCases = [case for case in back2BackCases if search_for in case]
+		
 
 	return passB2BTests(datapath, back2BackCases, testSuiteName)
 
