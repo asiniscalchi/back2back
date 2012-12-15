@@ -26,12 +26,14 @@ def die(message, errorcode=-1) :
 
 import diffaudio
 import difftext
+import diffbin
 diff_for_type = {
 	".wav" : diffaudio.differences,
 	".txt" : difftext.differences,
 	".clamnetwork" : difftext.differences,
 	".xml" : difftext.differences,
 	".ttl" : difftext.differences,
+	".bin" : diffbin.differences,
 }
 
 def diff_files(expected, result, diffbase) :
