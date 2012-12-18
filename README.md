@@ -90,7 +90,7 @@ Just like in this b2b script:
 				
 		("myprogram_with_other_option",	"./myprogram --other-option input.wav output.wav", "output.wav"),
 		]
-	runBack2BackProgram(data_path, sys.argv, back2BackTests)
+	runBack2BackProgram(data_path, sys.argv, back2BackTests, "test_suite_name")
 
 Save this file as `back2back`, for example, and make it executable.
 
@@ -134,6 +134,8 @@ due to floating point mismatches, use:
 
 
 
-
+JUnit Output
+------------
+At every execution the back2back framework will create an test_suite_name_test_detail.xml file in in JUnit format
 
 
