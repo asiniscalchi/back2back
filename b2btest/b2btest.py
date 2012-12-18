@@ -181,6 +181,14 @@ help ="""
 To run the tests call this script without parameters.
 	./back2back
 
+To run just some cases you can use the "--filter substring" argument 
+to run all tests cases which includes "substring" on its names, or "--filter_regex regex"
+to run all tests cases which matches the regular expression "regex" on name:
+	./back2back --filter dummy
+(runs test cases called dummy_test case_dummy blahdummyblah etc..)
+	./back2back --filter_regex ^dummy$
+(runs only test case called "dummy")
+
 Failed cases will generate *_result.wav and *_diff.wav
 files for each missmatching output, containing the
 obtained output and the difference with the expected one.
@@ -238,13 +246,13 @@ def runBack2BackProgram_returnSuccess(datapath, argv, back2BackCases, testSuiteN
 		accept(datapath, back2BackCases, architectureSpecific)
 		sys.exit()
 
-	if "--runonly_re" in argv :
-		regex_pattern = argv[argv.index("--runonly_re")+1]
+	if "--filter_regex" in argv :
+		regex_pattern = argv[argv.index("--filter_regex")+1]
 		allcases = list(back2BackCases)
 		back2BackCases = [case for case in allcases if re.search(regex_pattern,case[0])]
 		
-	if "--runonly" in argv :
-		search_for = argv[argv.index("--runonly")+1:]
+	if "--filter" in argv :
+		search_for = argv[argv.index("--filter")+1:]
 		allcases = list(back2BackCases)
 		back2BackCases = []
 		for case in allcases:
