@@ -112,25 +112,6 @@ due to floating point mismatches, use:
 	./back2back --arch --accept case1 case2
 
 
-Extra advices
--------------
-
-Put your tests under a continuous integration system such
-* BuildBot
-* TestFarm
-* CDash
-
-You might be lazy passing tests but bots aren't.
-Connect your bots to your VCS so they test for every commit.
-
-If one b2b test gets red, don't keep it for long,
-either accept it or roll-back your code.
-b2b detect changes, but if you are in a change
-you won't notice whether a second one happens.
-If your expectation data is backed by a version 
-control system dare to accept wrong expectation data
-until you fix it. But don't forget.
-
 
 
 
