@@ -74,16 +74,15 @@ Just like in this b2b script:
 	data_path="path/to/b2bdata"
 	back2BackTests = [
 		("myprogram_with_option",
-				"./myprogram --option input1.wav input2.wav output.wav otheroutput.wav ",
+				"./myprogram --option input1.wav input2.wav output.wav otheroutput.wav",
 				[
 					"output.wav",
-					"otheroutput.wav",
+					"otheroutput.wav"
 		]),
 		("myprogram_with_other_option",
-				"./myprogram --other-option input1.wav input2.wav output.wav ignoredoutput.wav ",
-				[
-					"output.wav",
-				]),
+				"./myprogram --other-option input.wav output.wav",
+				"output.wav"
+				),
 		]
 	runBack2BackProgram(data_path, sys.argv, back2BackTests)
 
