@@ -56,6 +56,17 @@ Features:
 * Comparators and diff generators can be added for your own file type.
 * Allows to specify architecture dependant outputs for the same test.
 
+Install
+-------
+On ubuntu 12.04 machine you will need to install the following packages:
+
+	$ sudo apt-get install python-setuptools
+	$ sudo easy_install scikits.audiolab
+	
+Then get the back2back framework and within the back2back directory:
+
+	$ setup.py install --user
+
 How does it works
 -----------------
 
@@ -117,25 +128,6 @@ due to floating point mismatches, use:
 
 	./back2back --arch --accept case1 case2
 
-
-Extra advices
--------------
-
-Put your tests under a continuous integration system such
-* BuildBot
-* TestFarm
-* CDash
-
-You might be lazy passing tests but bots aren't.
-Connect your bots to your VCS so they test for every commit.
-
-If one b2b test gets red, don't keep it for long,
-either accept it or roll-back your code.
-b2b detect changes, but if you are in a change
-you won't notice whether a second one happens.
-If your expectation data is backed by a version 
-control system dare to accept wrong expectation data
-until you fix it. But don't forget.
 
 
 
