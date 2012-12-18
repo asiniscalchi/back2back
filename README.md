@@ -56,6 +56,17 @@ Features:
 * Comparators and diff generators can be added for your own file type.
 * Allows to specify architecture dependant outputs for the same test.
 
+Install
+-------
+On ubuntu 12.04 machine you will need to install the following packages:
+
+	$ sudo apt-get install python-setuptools
+	$ sudo easy_install scikits.audiolab
+	
+Then get the back2back framework and within the back2back directory:
+
+	$ setup.py install --user
+
 How does it works
 -----------------
 
