@@ -99,9 +99,13 @@ To run the tests call this script without parameters.
 	./back2back
 
 If you want to run just some specific cases you can use the following command line arguments:
+
 "--filter substring" : runs all tests cases which includes "substring" on its names
+
 	./back2back --filter dummy # (runs test cases called dummy_test case_dummy blahdummyblah etc..)
+	
 "--filter_regex regex" : runs all tests cases which matches the regular expression "regex" on name
+
 	./back2back --filter_regex ^dummy$ # (runs only test case called "dummy")
 
 Failed cases will generate `*_result.wav` and `*_diff.wav`
