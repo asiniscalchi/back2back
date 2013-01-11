@@ -259,6 +259,15 @@ def runBack2BackProgram_returnSuccess(datapath, argv, back2BackCases, testSuiteN
 			case_name = case[0]
 			if any([ True for string in search_for if string in case_name ]) :
 				back2BackCases.append(case)
+	if "--negative_filter" in argv :
+		search_for = argv[argv.index("--filter")+1:]
+		allcases = list(back2BackCases)
+		back2BackCases = []
+		for case in allcases:
+			case_name = case[0]
+			if not any([ True for string in search_for if string in case_name ]) :
+				back2BackCases.append(case)
+
 	return passB2BTests(datapath, back2BackCases, testSuiteName)
 
 def runBack2BackProgram(datapath, argv, back2BackCases, testSuiteName="undefined", help=help, enable_colors=True) :
