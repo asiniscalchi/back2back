@@ -99,13 +99,17 @@ def removeIfExists(filename) :
 	try: os.remove(filename)
 	except: pass
 
-def passB2BTests(datapath, back2BackCases, testSuiteName) :
+def passB2BTests(datapath, back2BackCases, testSuiteName, dry_run) :
 	failedCases = []	
 	
 	testsuite = TestSuite(testSuiteName)
+		
 
 	for case, command, outputs in back2BackCases :
-		testsuite.appendTestCase(passB2BTest(datapath, failedCases, case, command, outputs))
+		if dry_run : 
+			print "\n%s\n" % command
+		else :
+			testsuite.appendTestCase(passB2BTest(datapath, failedCases, case, command, outputs))
 
 	
 	junitDoc = JUnitDocument("AllTests")
@@ -189,6 +193,9 @@ to run all tests cases which matches the regular expression "regex" on name:
 	./back2back --filter_regex ^dummy$
 (runs only test case called "dummy")
 
+To make a dry run to only print the commands use the argument --dry:
+	./back2back --dry
+
 Failed cases will generate *_result.wav and *_diff.wav
 files for each missmatching output, containing the
 obtained output and the difference with the expected one.
@@ -267,8 +274,11 @@ def runBack2BackProgram_returnSuccess(datapath, argv, back2BackCases, testSuiteN
 			case_name = case[0]
 			if not any([ True for string in search_for if string in case_name ]) :
 				back2BackCases.append(case)
+	dry_run = False
+	if "--dry" in argv : 
+		dry_run = True
 
-	return passB2BTests(datapath, back2BackCases, testSuiteName)
+	return passB2BTests(datapath, back2BackCases, testSuiteName, dry_run)
 
 def runBack2BackProgram(datapath, argv, back2BackCases, testSuiteName="undefined", help=help, enable_colors=True) :
 	runBack2BackProgram_returnSuccess(datapath, argv, back2BackCases, testSuiteName, help, enable_colors) or die("Tests not passed") 
