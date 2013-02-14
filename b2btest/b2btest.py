@@ -92,6 +92,10 @@ def accept(datapath, back2BackCases, archSpecific=False, cases=[]) :
 				os.rename(badResult, expectedArchName(base, extension))
 			else :
 				os.rename(badResult, expectedName(base, extension))
+			try:
+				os.remove(diffBaseName(base)+extension)
+			except: 
+				pass
 	if remainingCases :
 		print "Warning: No such test cases:", ", ".join("'%s'"%case for case in remainingCases)
 
@@ -105,6 +109,8 @@ def passB2BTests(datapath, back2BackCases, testSuiteName, dry_run) :
 	testsuite = TestSuite(testSuiteName)
 		
 
+	if dry_run : 
+		print "# DATAPATH=%s" % datapath
 	for case, command, outputs in back2BackCases :
 		if dry_run : 
 			print "\n%s\n" % command
