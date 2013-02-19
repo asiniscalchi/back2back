@@ -112,6 +112,7 @@ def passB2BTests(datapath, back2BackCases, testSuiteName, dry_run) :
 	if dry_run : 
 		print "# DATAPATH=%s" % datapath
 	for case, command, outputs in back2BackCases :
+		command = os.path.normcase(command)
 		if dry_run : 
 			print "\n%s\n" % command
 		else :
