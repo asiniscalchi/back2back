@@ -27,10 +27,15 @@ extensions = [
 	'au',
 ]
 
-def differences(expected, result, diffBase=None, threshold_dBs=-80, allow_different_duration=False, expected_offset=0, result_offset = 0) :
+def differences(expected, result, diffBase, extra_args) :
 	import wavefile_audiolab
 	import numpy as np
 	import math
+
+	threshold_dBs = extra_args['threshold_dbs']
+	allow_different_duration = extra_args['allow_different_duration']
+	expected_offset = extra_args['expected_offset']
+	result_offset = extra_args['result_offset']
 
 	mandatory_attributes = [ 
 				'samplerate', 
