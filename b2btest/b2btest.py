@@ -36,7 +36,7 @@ diff_for_type = {
 	".bin" : diffbin.differences,
 }
 
-def diff_files(expected, result, diffbase) :
+def diff_files(expected, result, diffbase, extra_args_for_diff) :
 	if not os.access(result, os.R_OK):
 		print "Result file not found: ", result
 		return ["Result was not generated: '%s'"%result]
@@ -46,7 +46,7 @@ def diff_files(expected, result, diffbase) :
 	extension = os.path.splitext(result)[-1]
 
 	diff = diff_for_type.get(extension, difftext.differences)
-	return diff(expected, result, diffbase)
+	return diff(expected, result, diffbase, extra_args_for_diff)
 
 
 def archSuffix() :
@@ -103,7 +103,7 @@ def removeIfExists(filename) :
 	try: os.remove(filename)
 	except: pass
 
-def passB2BTests(datapath, back2BackCases, testSuiteName, dry_run) :
+def passB2BTests(datapath, back2BackCases, testSuiteName, dry_run, extra_args_for_diff) :
 	failedCases = []	
 	
 	testsuite = TestSuite(testSuiteName)
@@ -116,9 +116,8 @@ def passB2BTests(datapath, back2BackCases, testSuiteName, dry_run) :
 		if dry_run : 
 			print "\n%s\n" % command
 		else :
-			testsuite.appendTestCase(passB2BTest(datapath, failedCases, case, command, outputs))
+			testsuite.appendTestCase(passB2BTest(datapath, failedCases, case, command, outputs, extra_args_for_diff))
 
-	
 	junitDoc = JUnitDocument("AllTests")
 	junitDoc.appendTestSuite(testsuite)
 
@@ -139,7 +138,7 @@ def passB2BTests(datapath, back2BackCases, testSuiteName, dry_run) :
 	return False
 
 
-def passB2BTest(datapath, failedCases, case, command, outputs):
+def passB2BTest(datapath, failedCases, case, command, outputs, extra_args_for_diff):
 	testcase = TestCase(case)
 	phase("Test: %s Command: '%s'"%(case,command))
 
@@ -163,12 +162,11 @@ def passB2BTest(datapath, failedCases, case, command, outputs):
 		return testcase
 	failures = []
 	for output in outputs :
-
 		extension = os.path.splitext(output)[-1]
 		base = prefix(datapath, case, output)
 		expected = expectedName(base, extension)
 		diffbase = diffBaseName(base)
-		difference = diff_files(expected, output, diffbase)
+		difference = diff_files(expected, output, diffbase, extra_args_for_diff)
 		#diffbase = diffbase+'.wav'
 		diffbase = diffbase + extension
 
@@ -281,11 +279,27 @@ def runBack2BackProgram_returnSuccess(datapath, argv, back2BackCases, testSuiteN
 			case_name = case[0]
 			if not any([ True for string in search_for if string in case_name ]) :
 				back2BackCases.append(case)
+
 	dry_run = False
 	if "--dry" in argv : 
 		dry_run = True
 
-	return passB2BTests(datapath, back2BackCases, testSuiteName, dry_run)
+	extra_args_for_diff = {	"threshold_dbs" : -80. ,
+				"allow_different_duration" : False ,
+				"expected_offset" : 0 ,
+				"result_offset" : 0
+				}
+
+	for argument, arg_type in [ ('threshold_dbs', float), ('expected_offset', int), ('result_offset', int) ] :
+		if '--%s' % argument in argv :
+			extra_args_for_diff[argument] = arg_type(argv[argv.index('--%s' % argument)+1])
+
+	if "--allow_different_duration" in argv or \
+			extra_args_for_diff['expected_offset'] !=0 or \
+			extra_args_for_diff['result_offset'] !=0 : 
+		extra_args_for_diff['allow_different_duration'] = True
+
+	return passB2BTests(datapath, back2BackCases, testSuiteName, dry_run, extra_args_for_diff)
 
 def runBack2BackProgram(datapath, argv, back2BackCases, testSuiteName="undefined", help=help, enable_colors=True) :
 	runBack2BackProgram_returnSuccess(datapath, argv, back2BackCases, testSuiteName, help, enable_colors) or die("Tests not passed") 
