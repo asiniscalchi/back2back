@@ -4,6 +4,7 @@ import re
 
 from junitoutput import *
 from ansi_color import ansiColor
+from shutil import copyfile
 
 def run(command) :
 	print ansiColor.add_green_color(':: %s' % command)
@@ -177,7 +178,7 @@ def passB2BTest(datapath, failedCases, case, command, outputs, extra_args_for_di
 			removeIfExists(badResultName(base,extension))
 		else:
 			print ansiColor.add_red_color(" Failed")
-			os.system('cp %s %s' % (output, badResultName(base,extension)) )
+			copyfile(output, badResultName(base,extension)) 
 			failures.append("Output '%s':\n%s"%(base, '\n'.join(['\t- %s'%item for item in difference])))
 			testcase.appendFailure("Output '%s':\n%s"%(base, '\n'.join(['\t- %s'%item for item in difference])))
 		removeIfExists(output)
