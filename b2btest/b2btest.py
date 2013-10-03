@@ -30,6 +30,7 @@ import difftext
 import diffbin
 diff_for_type = {
 	".wav" : diffaudio.differences,
+	".audio" : diffaudio.differences,
 	".txt" : difftext.differences,
 	".clamnetwork" : difftext.differences,
 	".xml" : difftext.differences,
