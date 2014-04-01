@@ -232,7 +232,7 @@ def runBack2BackProgram_returnSuccess(datapath, argv, back2BackCases, testSuiteN
 
 	architectureSpecific = "--arch" in argv
 	if architectureSpecific : argv.remove("--arch")
-	ansiColor.USE_ANSI_COLORS = enable_colors
+	ansiColor.USE_ANSI_COLORS = enable_colors and ansiColor.supports_color()
 
 	os.access( datapath, os.X_OK ) or die(
 		"Datapath at '%s' not available. "%datapath +
