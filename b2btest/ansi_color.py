@@ -1,7 +1,25 @@
+#!/usr/bin/python
+
+import sys
+
+def supports_color():
+    """
+Returns True if the running system's terminal supports color, and False
+otherwise.
+"""
+# copied from django: https://github.com/django/django/blob/master/django/core/management/color.py
+    plat = sys.platform
+    supported_platform = plat != 'Pocket PC' and (plat != 'win32' or
+                                                  'ANSICON' in os.environ)
+    # isatty is not always implemented, #6223.
+    is_a_tty = hasattr(sys.stdout, 'isatty') and sys.stdout.isatty()
+    if not supported_platform or not is_a_tty:
+        return False
+    return True
 
 class AnsiColor() :
 	def __init__(self) :
-		USE_ANSI_COLORS = True
+		USE_ANSI_COLORS = supports_color()
 
 	def add_ansi_color(self, string, color_code_of_line, color_code_after_line=0) :
 		if not self.USE_ANSI_COLORS : return string
