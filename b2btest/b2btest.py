@@ -76,10 +76,25 @@ def diffBaseName(base) :
 def prefix(datapath, case, output) :
 	outputBasename = os.path.splitext(os.path.basename(output))[0]
 	return os.path.join(datapath, case + '_' + outputBasename )
+def listFailedCases(datapath, back2BackCases) :
+	failedCases = []
+	for test in back2BackCases :
+		case = test[0]
+		outputs = test[2]
+		for output in outputs :
+			extension = os.path.splitext(output)[-1]
+			base = prefix(datapath, case, output)
+			badResult = badResultName(base, extension)
+			if os.access(badResult, os.R_OK) :
+				failedCases.append(case)
+	return failedCases
 
 def accept(datapath, back2BackCases, archSpecific=False, cases=[]) :
 	remainingCases = cases[:]
-	for case, command, outputs in back2BackCases :
+	for test in back2BackCases :
+		case = test[0]
+		command = test[1]
+		outputs = test[2]
 		if cases and case not in cases : continue
 		if cases : remainingCases.remove(case)
 		for output in outputs :
@@ -209,6 +224,9 @@ to run all tests cases which matches the regular expression "regex" on name:
 	./back2back --filter_regex ^dummy$
 (runs only test case called "dummy")
 
+To run all the (already) failing tests:
+	./back2back --filter_failed
+
 To make a dry run to only print the commands use the argument --dry:
 	./back2back --dry
 
@@ -223,6 +241,9 @@ where case1 and case2 are the cases to be accepted.
 
 To know which are the available cases:
 	./back2back --list
+
+To know which are the already failing cases:
+	./back2back --list_failed
 
 To accept any failing cases (USE IT WITH CARE) call:
 	./back2back --acceptall
@@ -255,9 +276,15 @@ def runBack2BackProgram_returnSuccess(datapath, argv, back2BackCases, testSuiteN
 			print case
 		sys.exit()
 
+	if "--list_failed" in argv : 
+		print "Failed cases: "
+		for case in listFailedCases(datapath, back2BackCases) :
+			print "\t%s" % case
+		sys.exit()
+
 	if "--accept" in argv :
 		cases = argv[argv.index("--accept")+1:]
-		cases or die("Option --accept needs a set of cases to accept.\nAvailable cases:\n"+"\n".join(["\t"+case for case, command, outputs in back2BackCases]))
+		cases or die("Option --accept needs a set of cases to accept.\nAvailable cases:\n"+"\n".join(["\t"+test[0] for test in back2BackCases]))
 		unsupportedCases = set(cases).difference(set(availableCases))
 		if unsupportedCases:
 			die("The following specified cases are not available:\n" + _caseList(unsupportedCases) + "Try with:\n" + _caseList(availableCases))
@@ -273,6 +300,11 @@ def runBack2BackProgram_returnSuccess(datapath, argv, back2BackCases, testSuiteN
 		regex_pattern = argv[argv.index("--filter_regex")+1]
 		allcases = list(back2BackCases)
 		back2BackCases = [case for case in allcases if re.search(regex_pattern,case[0])]
+
+	if "--filter_failed" in argv :
+		allcases = list(back2BackCases)
+		failed_cases = listFailedCases(datapath, back2BackCases)
+		back2BackCases = [case for case in allcases if case[0] in failed_cases ]
 		
 	if "--filter" in argv :
 		search_for = argv[argv.index("--filter")+1:]
