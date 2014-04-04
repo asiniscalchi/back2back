@@ -113,7 +113,16 @@ def passB2BTests(datapath, back2BackCases, testSuiteName, dry_run, extra_args_fo
 
 	if dry_run : 
 		print "# DATAPATH=%s" % datapath
-	for case, command, outputs in back2BackCases :
+	for test in back2BackCases : 
+		arguments = len(test) 
+		if arguments == 3 :
+			case, command, outputs = test
+		elif arguments == 4 : 
+			case, command, outputs, optional_arguments = test
+			extra_args_for_diff.update(optional_arguments)
+		else : 
+			print "WARNING: skipping bad test %s" % test
+			continue
 		command = os.path.normcase(command)
 		if dry_run : 
 			print "\n%s\n" % command
@@ -238,7 +247,7 @@ def runBack2BackProgram_returnSuccess(datapath, argv, back2BackCases, testSuiteN
 		"Datapath at '%s' not available. "%datapath +
 		"Check the back 2 back script on information on how to obtain it.")
 
-	availableCases = [case for case, command, outputs in back2BackCases]
+	availableCases = [test[0] for test in back2BackCases]
 
 	if "--list" in argv :
 
