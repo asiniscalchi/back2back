@@ -105,10 +105,18 @@ def accept(datapath, back2BackCases, archSpecific=False, cases=[]) :
 			if not os.access(badResult, os.R_OK) : continue
 			print "Accepting", badResult
 
-			if archSpecific :
-				os.rename(badResult, expectedArchName(base, extension))
-			else :
-				os.rename(badResult, expectedName(base, extension))
+			expectedFilename = expectedArchName(base, extension) if archSpecific else expectedName(base, extension)
+
+			# if exists, remove old expected (to avoid error #183 renaming on windows -file existent...-)
+			if os.path.exists(expectedFilename) : 
+				try :
+					os.remove(expectedFilename)
+				except:
+					print "WARNING: cannot remove previously expected file %s" % expectedFilename
+					pass
+
+			os.rename(badResult, expectedFilename)
+
 			try:
 				os.remove(diffBaseName(base)+extension)
 			except: 
