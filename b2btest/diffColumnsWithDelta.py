@@ -1,9 +1,10 @@
 #!/usr/bin/python
 import os
+import re
 
 extensions = [
 	'metadata',
-	'prm',
+	'txt',
 ]
 
 def differences(expected, result, diffbase, extra_args) :
@@ -20,8 +21,10 @@ def differences(expected, result, diffbase, extra_args) :
 	max_value_error = (-1, -1, -1, -1, -1) # (line, column, absValueOfDiff, expectedValue, resultValue)
 	strings_errors = []
 	for lineNr in range(len(expectedLines)) :
-		expectedLine = expectedLines[lineNr].strip().split()
-		resultLine = resultLines[lineNr].strip().split()
+		expectedLine = re.split("[, \t\[\]\(\)]", expectedLines[lineNr].strip())
+		resultLine = re.split ("[, \t\[\]\(\)]",  resultLines[lineNr].strip())
+		#expectedLine = expectedLines[lineNr].strip().split()
+		#resultLine = resultLines[lineNr].strip().split()
 		if expectedLine == resultLine : 
 			continue
 		if len(expectedLine) != len(resultLine) :

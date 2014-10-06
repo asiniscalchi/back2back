@@ -32,12 +32,11 @@ import diffColumnsWithDelta
 diff_for_type = {
 	".wav" : diffaudio.differences,
 	".audio" : diffaudio.differences,
-	".txt" : difftext.differences,
 	".clamnetwork" : difftext.differences,
 	".xml" : difftext.differences,
 	".ttl" : difftext.differences,
 	".bin" : diffbin.differences,
-	".prm" : diffColumnsWithDelta.differences,
+	".txt" : diffColumnsWithDelta.differences,
 	".metadata" : diffColumnsWithDelta.differences,
 }
 
