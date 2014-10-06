@@ -28,6 +28,7 @@ def die(message, errorcode=-1) :
 import diffaudio
 import difftext
 import diffbin
+import diffColumnsWithDelta
 diff_for_type = {
 	".wav" : diffaudio.differences,
 	".audio" : diffaudio.differences,
@@ -36,6 +37,8 @@ diff_for_type = {
 	".xml" : difftext.differences,
 	".ttl" : difftext.differences,
 	".bin" : diffbin.differences,
+	".prm" : diffColumnsWithDelta.differences,
+	".atmos" : diffColumnsWithDelta.differences,
 }
 
 def diff_files(expected, result, diffbase, extra_args_for_diff) :
