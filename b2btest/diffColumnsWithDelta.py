@@ -2,8 +2,8 @@
 import os
 
 extensions = [
+	'metadata',
 	'prm',
-	'atmos',
 ]
 
 def differences(expected, result, diffbase, extra_args) :

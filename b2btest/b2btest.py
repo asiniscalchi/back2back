@@ -38,7 +38,7 @@ diff_for_type = {
 	".ttl" : difftext.differences,
 	".bin" : diffbin.differences,
 	".prm" : diffColumnsWithDelta.differences,
-	".atmos" : diffColumnsWithDelta.differences,
+	".metadata" : diffColumnsWithDelta.differences,
 }
 
 def diff_files(expected, result, diffbase, extra_args_for_diff) :
