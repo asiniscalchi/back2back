@@ -6,6 +6,16 @@ from junitoutput import *
 from ansi_color import ansiColor
 from shutil import copyfile
 
+
+def splitCmdLineArguments(args) : 
+	"""
+	Separate command line arguments: all the arguments before an optional "--" would be applied to the test commands, while the arguments after that would be applied to the b2b inftastructure
+	"""
+	separatorIdx = args.index("--") if "--" in args else len(args)
+	cmdArgs = args[:separatorIdx]
+	b2bArgs = [] if separatorIdx == len(args) else args[separatorIdx+1:]
+	return { "cmdArgs" : cmdArgs, "b2bArgs" : b2bArgs } 
+
 def run(command) :
 	print ansiColor.add_green_color(':: %s' % command)
 	errorCode = os.system(command)
@@ -356,5 +366,17 @@ def runBack2BackProgram_returnSuccess(datapath, argv, back2BackCases, testSuiteN
 
 def runBack2BackProgram(datapath, argv, back2BackCases, testSuiteName="undefined", help=help, enable_colors=True) :
 	runBack2BackProgram_returnSuccess(datapath, argv, back2BackCases, testSuiteName, help, enable_colors) or die("Tests not passed") 
+
+def runBack2BackProgram_newApi(datapath, argv, back2BackCases, testSuiteName="undefined", help=help, enable_colors=True) :
+	print "argv : ",argv
+	extra_args = splitCmdLineArguments(argv)
+	print "extra args: ", extra_args
+	if extra_args['cmdArgs'] :
+		tesdtCasesWithExtraArgs = []
+		for test in back2BackCases :
+			command = "%s %s" % (test[1], " ".join(extra_args['cmdArgs']))
+			tesdtCasesWithExtraArgs.append(tuple([test[0]] + [command] + list(test[2:])))
+		back2BackCases = tesdtCasesWithExtraArgs
+	runBack2BackProgram_returnSuccess(datapath, extra_args['b2bArgs'], back2BackCases, testSuiteName, help, enable_colors) or die("Tests not passed") 
 
 ### End of generic stuff

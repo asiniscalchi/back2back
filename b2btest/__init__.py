@@ -1,1 +1,1 @@
-from b2btest import runBack2BackProgram, runBack2BackProgram_returnSuccess, die
+from b2btest import runBack2BackProgram, runBack2BackProgram_returnSuccess, runBack2BackProgram_newApi, die
