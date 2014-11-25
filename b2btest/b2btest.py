@@ -13,7 +13,7 @@ def getDataPath (dataPathEnvVar, suiteSubDir, dataPathDefFile ) :
 	"""
 	try:
 		baseDataPath = os.environ[dataPathEnvVar].strip()
-		dataPath = os.path.join(base_data_path, suiteSubDir)
+		dataPath = os.path.join(baseDataPath, suiteSubDir)
 	except KeyError:
 		try:
 			baseDataPath = open(dataPathDefFile,"r").read().strip()
