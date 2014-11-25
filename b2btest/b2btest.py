@@ -7,6 +7,31 @@ from ansi_color import ansiColor
 from shutil import copyfile
 
 
+def getDataPath (dataPathEnvVar, suiteSubDir, dataPathDefFile ) :
+	"""
+	Get the data path, parsing the file dataPathDefFile and the environment variable dataPathEnvVar. The last overrides the first.
+	"""
+	try:
+		baseDataPath = os.environ[dataPathEnvVar].strip()
+		dataPath = os.path.join(base_data_path, suiteSubDir)
+	except KeyError:
+		try:
+			baseDataPath = open(dataPathDefFile,"r").read().strip()
+			dataPath = os.path.join(baseDataPath, suiteSubDir)
+		except: 
+			print "(EE) Please set the environment variable %s" % dataPathEnvVar
+			return None
+			sys.exit(1)
+		print "%s environment variable not set. Using \"%s\" from %s" % (dataPathEnvVar, baseDataPath, dataPathDefFile)
+	else:
+		print "Using environment variable %s = \"%s\"" % (dataPathEnvVar, baseDataPath)
+
+	if not os.path.isdir(dataPath) :
+		print("(EE) %s is not a directory" % dataPath)
+		return None
+
+	return dataPath
+
 def splitCmdLineArguments(args) : 
 	"""
 	Separate command line arguments: all the arguments before an optional "--" would be applied to the test commands, while the arguments after that would be applied to the b2b inftastructure
