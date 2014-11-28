@@ -32,10 +32,10 @@ def differences(expected, result, diffBase, extra_args) :
 	import numpy as np
 	import math
 
-	threshold_dBs = extra_args['threshold_dbs']
-	allow_different_duration = extra_args['allow_different_duration']
-	expected_offset = extra_args['expected_offset']
-	result_offset = extra_args['result_offset']
+	threshold_dBs = float(extra_args['threshold_dbs'])
+	allow_different_duration = bool(extra_args['allow_different_duration'])
+	expected_offset = int(extra_args['expected_offset'])
+	result_offset = int(extra_args['result_offset'])
 
 	mandatory_attributes = [ 
 				'samplerate', 
