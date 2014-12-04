@@ -8,7 +8,7 @@ extensions = [
 ]
 
 def differences(expected, result, diffbase, extra_args) :
-	delta = abs(1E-5 if not extra_args.has_key("delta") else extra_args["delta"])
+	delta = abs(1E-5 if not extra_args.has_key("metadata_threshold") else extra_args["metadata_threshold"])
 	extension = os.path.splitext(result)[-1]
 	difftxt = diffbase+extension
 	expectedLines = open(expected, 'U').readlines()

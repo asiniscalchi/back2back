@@ -5,9 +5,11 @@ import re
 from junitoutput import *
 from ansi_color import ansiColor
 from shutil import copyfile
+import copy
+import platform
 
 
-def getDataPath (dataPathEnvVar, suiteSubDir, dataPathDefFile ) :
+def getDataPathFromEnvironmentVarOrFile (dataPathEnvVar, dataPathDefFile, suiteSubDir ) :
 	"""
 	Get the data path, parsing the file dataPathDefFile and the environment variable dataPathEnvVar. The last overrides the first.
 	"""
@@ -175,12 +177,24 @@ def passB2BTests(datapath, back2BackCases, testSuiteName, dry_run, extra_args_fo
 	if dry_run : 
 		print "# DATAPATH=%s" % datapath
 	for test in back2BackCases : 
+		extra_args_for_diff_case = copy.copy(extra_args_for_diff)
 		arguments = len(test) 
 		if arguments == 3 :
 			case, command, outputs = test
 		elif arguments == 4 : 
 			case, command, outputs, optional_arguments = test
-			extra_args_for_diff.update(optional_arguments)
+			#[("%s_%s" % (key,system),type) for system in systems for key,type in a]
+			#[a.pop(i) for i,el in enumerate(a) if el=='x']
+			#platformArgsDict = [a.pop(i) for i,val in enumerate(	
+			# dict([(item[0][:-len("_linux")],item[1]) for item in d.items() if item[0][-len("linux"):] == "linux"])
+			extra_args_for_diff_case.update(optional_arguments)
+			# specific platform arguments (_linux, _mac, _win suffixes)
+			platformSuffix = { 'Linux' : '_linux', 'Darwin' : '_mac', 'Windows' : '_win' }[platform.system()]
+			#print "Before: " , extra_args_for_diff_case
+			extra_args_for_diff_case.update(dict([(item[0][:-len(platformSuffix)], item[1]) for item in optional_arguments.items() if item[0][-len(platformSuffix):] == platformSuffix]))
+			#print "After: " , extra_args_for_diff_case
+
+			
 		else : 
 			print "WARNING: skipping bad test %s" % test
 			continue
@@ -188,7 +202,7 @@ def passB2BTests(datapath, back2BackCases, testSuiteName, dry_run, extra_args_fo
 		if dry_run : 
 			print "\n%s\n" % command
 		else :
-			testsuite.appendTestCase(passB2BTest(datapath, failedCases, case, command, outputs, extra_args_for_diff))
+			testsuite.appendTestCase(passB2BTest(datapath, failedCases, case, command, outputs, extra_args_for_diff_case))
 
 	junitDoc = JUnitDocument("AllTests")
 	junitDoc.appendTestSuite(testsuite)

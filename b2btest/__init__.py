@@ -1,1 +1,1 @@
-from b2btest import runBack2BackProgram, runBack2BackProgram_returnSuccess, runBack2BackProgram_newApi, die, getDataPath
+from b2btest import runBack2BackProgram, runBack2BackProgram_returnSuccess, runBack2BackProgram_newApi, die, getDataPathFromEnvironmentVarOrFile
