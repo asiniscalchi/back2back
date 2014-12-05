@@ -182,24 +182,17 @@ def passB2BTests(datapath, back2BackCases, testSuiteName, dry_run, extra_args_fo
 			case, command, outputs = test
 		elif arguments == 4 : 
 			case, command, outputs, optional_arguments = test
-			#[("%s_%s" % (key,system),type) for system in systems for key,type in a]
-			#[a.pop(i) for i,el in enumerate(a) if el=='x']
-			#platformArgsDict = [a.pop(i) for i,val in enumerate(	
-			# dict([(item[0][:-len("_linux")],item[1]) for item in d.items() if item[0][-len("linux"):] == "linux"])
 			extra_args_for_diff_case.update(optional_arguments)
 			# specific platform arguments (_linux, _mac, _win suffixes)
 			platformSuffix = { 'Linux' : '_linux', 'Darwin' : '_mac', 'Windows' : '_win' }[platform.system()]
-			#print "Before: " , extra_args_for_diff_case
 			extra_args_for_diff_case.update(dict([(item[0][:-len(platformSuffix)], item[1]) for item in optional_arguments.items() if item[0][-len(platformSuffix):] == platformSuffix]))
-			#print "After: " , extra_args_for_diff_case
-
-			
 		else : 
 			print "WARNING: skipping bad test %s" % test
 			continue
 		command = os.path.normcase(command)
 		if dry_run : 
-			print "\n%s\n" % command
+			print "\nTest %s :" % case 
+			print "%s\n" % command
 		else :
 			testsuite.appendTestCase(passB2BTest(datapath, failedCases, case, command, outputs, extra_args_for_diff_case))
 
@@ -386,22 +379,16 @@ def runBack2BackProgram_returnSuccess(datapath, argv, back2BackCases, testSuiteN
 	if "--dry" in argv : 
 		dry_run = True
 
-	extra_args_for_diff = {	"threshold_dbs" : -80. ,
-				"allow_different_duration" : False ,
-				"expected_offset" : 0 ,
-				"result_offset" : 0
-				}
-
-	for argument, arg_type in [ ('threshold_dbs', float), ('expected_offset', int), ('result_offset', int) ] :
+	# parse diff arguments
+	allPossibleDiffArguments = {}
+	extraArgsForDiff = {}
+	for diffClass in set(diff_class_for_type.values()) :
+		allPossibleDiffArguments.update(diffClass().getExtraArgsNameAndTypeDict())
+	for argument, arg_type in allPossibleDiffArguments.items() :
 		if '--%s' % argument in argv :
-			extra_args_for_diff[argument] = arg_type(argv[argv.index('--%s' % argument)+1])
+			extraArgsForDiff[argument] = arg_type(argv[argv.index('--%s' % argument)+1])
 
-	if "--allow_different_duration" in argv or \
-			extra_args_for_diff['expected_offset'] !=0 or \
-			extra_args_for_diff['result_offset'] !=0 : 
-		extra_args_for_diff['allow_different_duration'] = True
-
-	return passB2BTests(datapath, back2BackCases, testSuiteName, dry_run, extra_args_for_diff)
+	return passB2BTests(datapath, back2BackCases, testSuiteName, dry_run, extraArgsForDiff)
 
 def runBack2BackProgram(datapath, argv, back2BackCases, testSuiteName="undefined", help=help, enable_colors=True) :
 	runBack2BackProgram_returnSuccess(datapath, argv, back2BackCases, testSuiteName, help, enable_colors) or die("Tests not passed") 
