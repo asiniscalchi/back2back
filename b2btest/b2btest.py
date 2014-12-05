@@ -5,7 +5,6 @@ import re
 from junitoutput import *
 from ansi_color import ansiColor
 from shutil import copyfile
-import copy
 import platform
 
 
@@ -67,15 +66,15 @@ import diffaudio
 import difftext
 import diffbin
 import diffColumnsWithDelta
-diff_for_type = {
-	".wav" : diffaudio.differences,
-	".audio" : diffaudio.differences,
-	".clamnetwork" : difftext.differences,
-	".xml" : difftext.differences,
-	".ttl" : difftext.differences,
-	".bin" : diffbin.differences,
-	".txt" : diffColumnsWithDelta.differences,
-	".metadata" : diffColumnsWithDelta.differences,
+diff_class_for_type = {
+	".wav" : diffaudio.DiffAudio,
+	".audio" : diffaudio.DiffAudio,
+	".clamnetwork" : difftext.DiffText,
+	".xml" : difftext.DiffText,
+	".ttl" : difftext.DiffText,
+	".bin" : diffbin.DiffBin,
+	".txt" : diffColumnsWithDelta.DiffColumnsWithDelta,
+	".metadata" : diffColumnsWithDelta.DiffColumnsWithDelta,
 }
 
 def diff_files(expected, result, diffbase, extra_args_for_diff) :
@@ -87,8 +86,8 @@ def diff_files(expected, result, diffbase, extra_args_for_diff) :
 		return ["No expectation for the output. First run? Check the results and accept them with the --accept option."]
 	extension = os.path.splitext(result)[-1]
 
-	diff = diff_for_type.get(extension, difftext.differences)
-	return diff(expected, result, diffbase, extra_args_for_diff)
+	diffClass = diff_class_for_type.get(extension, difftext)
+	return diffClass().differences(expected, result, diffbase, extra_args_for_diff)
 
 
 def archSuffix() :
@@ -177,7 +176,7 @@ def passB2BTests(datapath, back2BackCases, testSuiteName, dry_run, extra_args_fo
 	if dry_run : 
 		print "# DATAPATH=%s" % datapath
 	for test in back2BackCases : 
-		extra_args_for_diff_case = copy.copy(extra_args_for_diff)
+		extra_args_for_diff_case = extra_args_for_diff.copy()
 		arguments = len(test) 
 		if arguments == 3 :
 			case, command, outputs = test
