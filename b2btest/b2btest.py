@@ -39,8 +39,8 @@ def splitCmdLineArguments(args) :
 	Separate command line arguments: all the arguments before an optional "--" would be applied to the test commands, while the arguments after that would be applied to the b2b inftastructure
 	"""
 	separatorIdx = args.index("--") if "--" in args else len(args)
-	cmdArgs = args[:separatorIdx]
-	b2bArgs = [] if separatorIdx == len(args) else args[separatorIdx+1:]
+	b2bArgs = args[:separatorIdx]
+	cmdArgs = [] if separatorIdx == len(args) else args[separatorIdx+1:]
 	return { "cmdArgs" : cmdArgs, "b2bArgs" : b2bArgs } 
 
 def run(command) :
@@ -192,7 +192,7 @@ def passB2BTests(datapath, back2BackCases, testSuiteName, dry_run, extra_args_fo
 		command = os.path.normcase(command)
 		if dry_run : 
 			print "\nTest %s :" % case 
-			print "%s\n" % command
+			print "\t%s\n" % command
 		else :
 			testsuite.appendTestCase(passB2BTest(datapath, failedCases, case, command, outputs, extra_args_for_diff_case))
 
@@ -375,9 +375,7 @@ def runBack2BackProgram_returnSuccess(datapath, argv, back2BackCases, testSuiteN
 			if not any([ True for string in search_for if string in case_name ]) :
 				back2BackCases.append(case)
 
-	dry_run = False
-	if "--dry" in argv : 
-		dry_run = True
+	dry_run = True if "--dry" in argv else False
 
 	# parse diff arguments
 	allPossibleDiffArguments = {}
