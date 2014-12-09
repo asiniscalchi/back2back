@@ -86,7 +86,7 @@ def diff_files(expected, result, diffbase, extra_args_for_diff) :
 		return ["No expectation for the output. First run? Check the results and accept them with the --accept option."]
 	extension = os.path.splitext(result)[-1]
 
-	diffClass = diff_class_for_type.get(extension, difftext)
+	diffClass = diff_class_for_type.get(extension, difftext.DiffText)
 	return diffClass().differences(expected, result, diffbase, extra_args_for_diff)
 
 
